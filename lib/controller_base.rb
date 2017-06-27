@@ -25,6 +25,7 @@ class ControllerBase
     @res.location = url # @res['Location'] = url also works
     # @res.redirect(url) also works but isn't allowed in the project
     @already_built_response = true
+    session.store_session(res)
   end
 
   # Populate the response with content.
@@ -34,6 +35,7 @@ class ControllerBase
     raise "Already Rendered/Redirected" if already_built_response?
     @res.write(content)
     @res['Content-Type'] = content_type
+    session.store_session(res)
     @already_built_response = true
   end
 
@@ -49,6 +51,7 @@ class ControllerBase
 
   # method exposing a `Session` object
   def session
+    @session ||= Session.new(@req)
   end
 
   # use this with the router to call action_name (:index, :show, :create...)
